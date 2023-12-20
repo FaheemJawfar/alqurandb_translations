@@ -1,28 +1,30 @@
-import pandas as pd
 import xml.etree.ElementTree as ET
 
+# Load the original XML file
+xml_file_path = "ta.tamil.xml"
+tree = ET.parse(xml_file_path)
+root = tree.getroot()
 
-def excel_to_xml(input_excel_file, output_xml_file):
-    # Read Excel file into a DataFrame
-    df = pd.read_excel(input_excel_file)
+# Create a new XML tree
+new_tree = ET.ElementTree(ET.Element('quran'))
+new_root = new_tree.getroot()
 
-    # Create XML root element
-    root = ET.Element("data")
+# Iterate through sura elements
+for sura in root.findall('.//sura'):
+    sura_number = sura.get('index')
 
-    # Convert each row in the DataFrame to XML
-    for _, row in df.iterrows():
-        item_element = ET.SubElement(root, "item")
-        for col_name, cell_value in row.items():
-            col_element = ET.SubElement(item_element, col_name)
-            col_element.text = str(cell_value)
+    # Create a new sura element in the new XML structure
+    new_sura = ET.SubElement(new_root, 'sura', number=sura_number)
 
-    # Create an ElementTree object and write to the XML file
-    tree = ET.ElementTree(root)
-    tree.write(output_xml_file, xml_declaration=True, encoding="utf-8")
+    # Iterate through aya elements within each sura
+    for aya in sura.findall('.//aya'):
+        aya_number = aya.get('index')
+        aya_index = aya.get('index')
+        aya_text = aya.get('text')
 
+        # Create a new aya element in the new XML structure
+        new_aya = ET.SubElement(new_sura, 'aya', index=aya_index, aya_number=aya_index, text=aya_text, footnotes='')
 
-if __name__ == "__main__":
-    excel_file_path = "path/to/your/excel/file.xlsx"
-    xml_output_path = "path/to/your/output/file.xml"
-
-    excel_to_xml(excel_file_path, xml_output_path)
+# Save the new XML file
+new_xml_file_path = "new_tamil.xml"
+new_tree.write(new_xml_file_path, encoding='utf-8', xml_declaration=True)
