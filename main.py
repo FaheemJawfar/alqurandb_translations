@@ -2,7 +2,7 @@ import os
 import xml.etree.ElementTree as ET
 
 # Input and output folders
-input_folder = "source_data/test"
+input_folder = "source_data/xml"
 output_folder = "modified_version"
 
 # Create the output folder if it doesn't exist
